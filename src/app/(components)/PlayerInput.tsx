@@ -121,7 +121,7 @@ export default function PlayerInput({
 
   return (
     <div className="bg-gray-100 p-4 rounded text-neutral-900">
-      <h2 className="text-xl font-bold mb-2">{t('playerNumber', { playerNumber })}</h2>
+      <h2 className="text-xl font-bold mb-2">Player {playerNumber}</h2>
 
       <div className="mb-4">
         <h3 className="text-lg font-bold mb-2">{t('name')}</h3>
