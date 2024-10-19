@@ -1,10 +1,8 @@
-<!-- markdownlint-disable MD036 -->
-<!-- markdownlint-disable MD012 -->
 # Battle Simulator
 
 ## Overview
 
-The Battle Simulator is a web application that allows users to simulate battles between two players by inputting various troop configurations, levels, stats, and special bonuses. The simulator calculates the battle outcome based on the provided inputs and displays a detailed battle report.
+The Battle Simulator is a web application that allows users to simulate battles between two players by inputting various troop configurations, levels, stats, and special bonuses. The simulator calculates the battle outcome based on the provided inputs and displays a detailed battle report. You can also access the application online at [Battle Simulator](https://vercel.live/link/adv-battle-simulator.vercel.app?via=project-dashboard-alias-list&p=1&page=/).
 
 ## Features
 
@@ -140,13 +138,25 @@ battle-simulator/
 │   │   │   └── Troop.ts          # Troop classes
 │   │   ├── utils/
 │   │   │   └── helpers.ts        # Helper functions
-│   │   ├── page.tsx              # Main application page
-│   │   └── layout.tsx            # Application layout
+│   │   ├── [locale]/
+│   │   │   ├── layout.tsx        # Layout for locale-specific pages
+│   │   │   ├── page.tsx          # Main application page
+│   │   │   ├── about/
+│   │   │   │   └── page.tsx      # About page
+│   │   │   └── saved-battles/
+│   │   │       └── page.tsx      # Saved battles page
+│   ├── components/
+│   │   └── Navbar.tsx            # Navbar component
 ├── styles/
 │   └── globals.css               # Global CSS styles
+├── docs/
+│   └── instructions.md           # Additional documentation
 ├── .eslintrc.json                # ESLint configuration
 ├── package.json                  # Project metadata and scripts
-├── tailwind.config.js            # Tailwind CSS configuration
+├── tailwind.config.ts            # Tailwind CSS configuration
+├── tsconfig.json                 # TypeScript configuration
+├── next.config.mjs               # Next.js configuration
+├── postcss.config.mjs            # PostCSS configuration
 └── README.md                     # Project documentation
 ```
 
@@ -156,6 +166,11 @@ battle-simulator/
 - **react**: Library for building user interfaces.
 - **react-dom**: Entry point to the DOM and server renderers for React.
 - **file-saver**: Library to save files on the client-side.
+- **@formatjs/intl**: Internationalization library.
+- **@formatjs/intl-localematcher**: Locale matching utility.
+- **clsx**: Utility for conditionally joining classNames.
+- **next-intl**: Internationalization for Next.js applications.
+- **react-intl**: Internationalization library for React.
 
 ## Dev Dependencies
 
@@ -223,4 +238,3 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 ## Contact
 
 For questions or support, please open an issue in the [GitHub repository](https://github.com/Skynet2005/adv_battle_simulator.git/issues).
-
