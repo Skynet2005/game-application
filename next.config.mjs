@@ -1,8 +1,8 @@
-/** @type {import('next').NextConfig} */
 
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin();
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config) => {
     config.module.rules.push({
@@ -14,13 +14,17 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        port: "",
-        pathname: "/**",
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: ''
       },
-    ],
-  },
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com',
+        port: ''
+      }
+    ]
+  }
 };
 
 export default withNextIntl(nextConfig);

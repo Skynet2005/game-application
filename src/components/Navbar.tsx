@@ -6,6 +6,24 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
+import { UserButton } from '@clerk/nextjs';
+
+const DotIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor">
+      <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z" />
+    </svg>
+  );
+};
+
+const CustomPage = () => {
+  return (
+    <div>
+      <h1>Custom Profile Page</h1>
+      <p>This is the custom profile page</p>
+    </div>
+  );
+};
 
 const Navbar = ({ locale }: { locale: string }) => {
   const t = useTranslations("NavbarLinks");
@@ -44,7 +62,17 @@ const Navbar = ({ locale }: { locale: string }) => {
         )}
       </div>
       <div className="flex items-center gap-4">
-        <Link href={`/${locale}/about/profile`}>{t("profile")}</Link>
+        <UserButton>
+          <UserButton.UserProfilePage label="Custom Page" url="custom" labelIcon={<DotIcon />}>
+            <CustomPage />
+          </UserButton.UserProfilePage>
+          <UserButton.UserProfilePage label="Terms" labelIcon={<DotIcon />} url="terms">
+            <div>
+              <h1>Custom Terms Page</h1>
+              <p>This is the custom terms page</p>
+            </div>
+          </UserButton.UserProfilePage>
+        </UserButton>
         <select
           value={locale}
           onChange={handleLanguageChange}
@@ -54,6 +82,8 @@ const Navbar = ({ locale }: { locale: string }) => {
           <option value="fr" className="block px-4 py-2 bg-neutral-200 text-neutral-800 hover:bg-neutral-900">French</option>
           <option value="de" className="block px-4 py-2 bg-neutral-200 text-neutral-800 hover:bg-neutral-900">German</option>
           <option value="pt" className="block px-4 py-2 bg-neutral-200 text-neutral-800 hover:bg-neutral-900">Portuguese</option>
+          <option value="es" className="block px-4 py-2 bg-neutral-200 text-neutral-800 hover:bg-neutral-900">Spanish</option>
+          <option value="tr" className="block px-4 py-2 bg-neutral-200 text-neutral-800 hover:bg-neutral-900">Turkish</option>
         </select>
       </div>
     </div>

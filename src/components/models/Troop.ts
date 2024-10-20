@@ -1,6 +1,6 @@
 // src/app/models/Troop.ts
 
-import { getTroopStats } from '../utils/helpers';
+import { getTroopStats } from '../../app/utils/helpers';
 
 export class Troop {
   level: string;

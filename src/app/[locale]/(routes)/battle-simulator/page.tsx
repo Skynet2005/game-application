@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { getMessages } from "next-intl/server";
-import BattleSimulator from '../(components)/BattleSimulator';
+import BattleSimulator from '@/components/BattleSimulator';
 
 type Messages = {
     NavbarLinks: {

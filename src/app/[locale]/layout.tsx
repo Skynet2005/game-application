@@ -1,46 +1,29 @@
-// src/app/[locale]/layout.tsx
-
-import { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import "../globals.css";
+import MobileNav from '@/components/shared/MobileNav'
+import Sidebar from '@/components/shared/Sidebar'
+import { Toaster } from '@/components/ui/toaster'
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
-import localFont from "next/font/local";
+import { getLocale, getMessages } from 'next-intl/server';
 
-const geistSans = localFont({
-  src: "../fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "../fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
-export const metadata: Metadata = {
-  title: "Game Application",
-  description: "An innovative game application offering a suite of tools designed to enhance gameplay efficiency and enjoyment.",
-};
-
-export default async function RootLayout({
-  children,
-  params: { locale },
-}: Readonly<{
-  children: React.ReactNode;
-  params: { locale: string };
-}>) {
+const Layout = async ({ children }: { children: React.ReactNode }) => {
+  const locale = await getLocale();
   const messages = await getMessages();
+
   return (
-    <html lang={locale}>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <NextIntlClientProvider messages={messages}>
-          <div className="mx-auto max-w-4xl h-screen">
-            <Navbar locale={locale} />
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <main className="root">
+        <Sidebar />
+        <MobileNav />
+
+        <div className="root-container">
+          <div className="wrapper">
             {children}
           </div>
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
+        </div>
+
+        <Toaster />
+      </main>
+    </NextIntlClientProvider>
+  )
 }
+
+export default Layout

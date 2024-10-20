@@ -1,13 +1,13 @@
-// src/app/(components)/BattleSimulator.tsx
+// src/components/BattleSimulator.tsx
 
 "use client";
 
 import { useState, useEffect } from 'react';
 import PlayerInput from './PlayerInput';
 import BattleResults from './BattleResults';
-import { Player } from '../models/Player';
-import { Battle } from '../models/Battle';
-import { Infantry, Lancer, Marksmen } from '../models/Troop';
+import { Player } from '@/components/models/Player';
+import { Battle } from '@/components/models/Battle';
+import { Infantry, Lancer, Marksmen } from '@/components/models/Troop';
 import { useTranslations } from "next-intl";
 import { getMessages } from "next-intl/server";
 

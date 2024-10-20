@@ -1,4 +1,4 @@
-// src/app/(components)/BattleResults.tsx
+// src/components/BattleResults.tsx
 
 "use client"
 
