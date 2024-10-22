@@ -1,18 +1,21 @@
-// src/app/[locale]/layout.tsx
-
-import { notFound } from "next/navigation";
-import { NextIntlClientProvider } from "next-intl";
-import {getLocale, getMessages} from 'next-intl/server';
-import { Metadata } from "next";
-import { ClerkProvider } from '@clerk/nextjs';
-import { ThemeProvider } from "@/components/theme-provider"
-
 import "./globals.css";
+import { Open_Sans } from 'next/font/google';
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from 'next-intl/server';
+import { Metadata } from "next";
+import { headers } from 'next/headers';
+import { ClerkProvider } from '@clerk/nextjs';
+import { ThemeProvider } from '@/components/providers/theme-provider';
+import { QueryProvider } from '@/components/providers/query-provider';
+import { ToasterProvider } from '@/components/providers/toaster-provider';
+import { cn } from '@/lib/utils';
+
+const font = Open_Sans({ subsets: ['latin'] });
 
 // Metadata for the application
 export const metadata: Metadata = {
-  title: "Game Application",
-  description: "An innovative game application offering a suite of tools designed to enhance gameplay efficiency and enjoyment.",
+  title: 'SkyneticStractions',
+  description: 'Shattering the usual, SkyneticStractions creates a powerful synthesis of motion and abstract ideation under the infinite digital sky.',
   icons: {
     icon: [{ url: "/logo.png" }],
   }
@@ -24,8 +27,15 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Await dynamic APIs like headers() correctly in server-side logic
   const locale = await getLocale();
   const messages = await getMessages();
+
+  // Await the headers API on the server side only
+  const headerData = await headers();
+  const acceptLanguage = headerData.get('accept-language');
+
+  console.log('Accepted Language:', acceptLanguage);
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
@@ -33,14 +43,18 @@ export default async function RootLayout({
         variables: { colorPrimary: '#002c6e' }
       }}>
         <html lang={locale} suppressHydrationWarning={true}>
-          <body className="antialiased">
+          {/* Server components (like headers) shouldn't affect the actual HTML rendering */}
+          <body className={cn(font.className, "bg-neutral-300 dark:bg-neutral-800")}>
             <ThemeProvider
               attribute="class"
               defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
+              enableSystem={false}
+              storageKey="skynetic-theme"
             >
-              {children}
+              <ToasterProvider />
+              <QueryProvider>
+                {children}
+              </QueryProvider>
             </ThemeProvider>
           </body>
         </html>

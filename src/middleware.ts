@@ -1,6 +1,6 @@
 import { authMiddleware } from "@clerk/nextjs";
-
 import createMiddleware from "next-intl/middleware";
+// import { headers } from 'next/headers';
 
 const intlMiddleware = createMiddleware({
   locales: ["en", "fr", "de", "pt"],
@@ -8,14 +8,25 @@ const intlMiddleware = createMiddleware({
 });
 
 export default authMiddleware({
-  beforeAuth: (req) => {
-    // Execute next-intl middleware before Clerk's auth middleware
+  beforeAuth: async (req) => {
+    // Use headers as needed
+    const acceptLanguage = req.headers.get('accept-language');
+    console.log('Accepted Language:', acceptLanguage);
     return intlMiddleware(req);
   },
-
-  // Ensure that locale specific sign-in pages are public
-  publicRoutes: ["/", "/en", "/:locale/sign-in"],
-  // ignoredRoutes: ["/en"]
+  publicRoutes: [
+    "/",
+    "/en",
+    "/:locale/sign-in",
+    "/api/webhook",
+    "/api/webhook/clerk",
+    "/api/og",
+    "/api/uploadthing",
+  ],
+  ignoredRoutes: [
+    "/landing",
+    "/api/webhook/clerk",
+  ],
 });
 
 export const config = {

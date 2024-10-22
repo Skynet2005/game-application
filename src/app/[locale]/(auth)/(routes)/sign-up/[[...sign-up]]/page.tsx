@@ -1,7 +1,7 @@
-import { SignUp } from '@clerk/nextjs'
+import { SignUp } from '@clerk/nextjs';
+import { getLocale } from 'next-intl/server';
 
-const SignUpPage = () => {
-  return <SignUp />
+export default async function Page() {
+  const locale = await getLocale();
+  return <SignUp path={`/${locale}/sign-up`} />;
 }
-
-export default SignUpPage

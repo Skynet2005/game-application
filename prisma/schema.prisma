@@ -1,0 +1,209 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User & Profile Management
+model Profile {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String     @unique
+  name      String
+  imageUrl  String
+  email     String
+  terminals Terminal[]
+  members   Member[]
+  circuits  Circuit[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model UserApiLimit {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @unique
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserSubscription {
+  id                     String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId                 String    @unique
+  stripeCustomerId       String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map("stripe_subscription_id")
+  stripePriceId          String?   @map("stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
+}
+
+// DigiKinetic Messenger
+model Terminal {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  imageUrl   String
+  inviteCode String    @unique
+  profileId  String    @db.ObjectId
+  profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  members    Member[]
+  circuits   Circuit[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([profileId])
+}
+
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+// DigiKinetic Messenger
+model Member {
+  id                     String          @id @default(auto()) @map("_id") @db.ObjectId
+  role                   MemberRole      @default(GUEST)
+  profileId              String          @db.ObjectId
+  profile                Profile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  terminalId             String          @db.ObjectId
+  terminal               Terminal        @relation(fields: [terminalId], references: [id], onDelete: Cascade)
+  messages               Message[]
+  directMessages         DirectMessage[]
+  conversationsInitiated Conversation[]  @relation("MemberOne")
+  conversationsReceived  Conversation[]  @relation("MemberTwo")
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+
+  @@index([profileId])
+  @@index([terminalId])
+}
+
+enum CircuitType {
+  TEXT
+  AUDIO
+  VIDEO
+}
+
+model Circuit {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  type       CircuitType @default(TEXT)
+  profileId  String      @db.ObjectId
+  profile    Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  terminalId String      @db.ObjectId
+  terminal   Terminal    @relation(fields: [terminalId], references: [id], onDelete: Cascade)
+  messages   Message[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([profileId])
+  @@index([terminalId])
+}
+
+model Conversation {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  memberOneId    String          @db.ObjectId
+  memberOne      Member          @relation("MemberOne", fields: [memberOneId], references: [id], onDelete: Cascade)
+  memberTwoId    String          @db.ObjectId
+  memberTwo      Member          @relation("MemberTwo", fields: [memberTwoId], references: [id], onDelete: Cascade)
+  directMessages DirectMessage[]
+
+  @@unique([memberOneId, memberTwoId])
+  @@index([memberTwoId])
+}
+
+model DirectMessage {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  content        String
+  fileUrl        String?
+  memberId       String       @db.ObjectId
+  member         Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  conversationId String       @db.ObjectId
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  deleted        Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([memberId])
+  @@index([conversationId])
+}
+
+// DigiKinetic Messenger & Quantum Clones
+model Message {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  content     String
+  fileUrl     String?
+  memberId    String?    @db.ObjectId
+  member      Member?    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  circuitId   String?    @db.ObjectId
+  circuit     Circuit?   @relation(fields: [circuitId], references: [id], onDelete: Cascade)
+  deleted     Boolean    @default(false)
+  role        Role?
+  companionId String?    @db.ObjectId
+  userId      String?
+  companion   Companion? @relation(fields: [companionId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([circuitId])
+  @@index([memberId])
+  @@index([companionId])
+}
+
+// Quantum Clone
+model Category {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  companions Companion[]
+}
+
+model Companion {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String
+  userName     String
+  src          String
+  name         String
+  description  String
+  instructions String
+  seed         String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  category     Category  @relation(fields: [categoryId], references: [id])
+  categoryId   String    @db.ObjectId
+  messages     Message[]
+
+  @@index([categoryId])
+  @@fulltext([name])
+}
+
+enum Role {
+  user
+  system
+}
+
+// Sketchnetic
+model Gallery {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  Predictions Prediction[]
+}
+
+model Prediction {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  uuid         String    @unique
+  input        Json?
+  output       Json?
+  status       String?
+  createdAt    DateTime  @default(now())
+  started_at   DateTime?
+  completed_at DateTime?
+  version      String?
+  metrics      Json?
+  error        String?
+  logs         String?
+  galleryId    String    @db.ObjectId
+  gallery      Gallery   @relation(fields: [galleryId], references: [id])
+
+  @@index([galleryId])
+}

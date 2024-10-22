@@ -1,0 +1,15 @@
+export const transformationButtons = [
+  { label: 'Generative Fill', transformation: 'generative-fill' },
+  { label: 'Remove Background', transformation: 'bg-remove' },
+  { label: 'Gray', transformation: 'grayscale', hasSlider: true, min: 0, max: 100, },
+  { label: 'Black and White', transformation: 'blackwhite' },
+  { label: 'Blur', transformation: 'blur', hasSlider: true, min: 1, max: 2000, },
+  { label: 'Negative', transformation: 'negate' },
+  { label: 'Pixelated', transformation: 'pixelate' },
+  { label: 'Sepia', transformation: 'sepia' },
+  { label: 'Cartoon', transformation: 'cartoonify' },
+  { label: 'Lut', transformation: 'lut' },
+  { label: 'Improve', transformation: 'improve' },
+  { label: 'Sharpen', transformation: 'sharpen', hasSlider: true, min: 1, max: 2000, },
+  { label: 'Remove Redeye', transformation: 'redEye' },
+];
